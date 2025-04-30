@@ -1,31 +1,16 @@
-from django.shortcuts import render
 from django.contrib.auth import get_user_model
-from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets, permissions
-from rest_framework.permissions import IsAuthenticated
-from .models import Follow
-from .serializers import RegisterSerializer, FollowSerializer
-from .permissions import IsSelfOrFollowed
+from rest_framework import status, permissions
+from ..models import Follow
+from ..serializers import FollowSerializer
+from ..permissions import IsSelfOrFollowed
 
 User = get_user_model()
 
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class ProtectedView(APIView):
+# Class to handle the list of users that the authenticated user is following
 
-    permission_classes = [IsAuthenticated]
-
-    def get (self, request):
-        return Response({"message": f"Hello {request.user.username}!"})
-    
 class FollowingListView(ListAPIView):
     serializer_class = FollowSerializer
     permission_classes = [IsSelfOrFollowed]
@@ -34,6 +19,8 @@ class FollowingListView(ListAPIView):
         username = self.kwargs.get('username')
         return Follow.objects.filter(following__username=username)
     
+# Class to handle the list of users that are following the authenticated user
+
 class FollowedView(APIView):
     serializer_Class = FollowSerializer
     permission_classes = [IsSelfOrFollowed]
@@ -42,13 +29,13 @@ class FollowedView(APIView):
         username = self.kwargs.get('username')
         return Follow.objects.filter(followed__username=username)
     
+# Class to handle the follow/unfollow functionality
+
 class FollowToggleView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, username):
         
-        # Follow
-
         try:
             followed = User.objects.get(username=username)
         except User.DoesNotExist:
