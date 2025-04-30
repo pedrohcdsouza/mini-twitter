@@ -17,13 +17,21 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-    
-class FollowSerializer(serializers.ModelSerializer):
-    
-    following = serializers.ReadOnlyField(source='following.username')
-    followed = serializers.ReadOnlyField(source='followed.username')
+
+class FollowingSerializer(serializers.ModelSerializer):
+
+    user = serializers.CharField(source='following.username')
+    following = serializers.CharField(source='followed.username')
 
     class Meta:
-
         model = Follow
-        fields = ['following', 'followed', 'created_at']
+        fields = ['user','following','created_at']
+
+class FollowedSerializer(serializers.ModelSerializer):
+
+    user = serializers.CharField(source='following.username')
+    followed = serializers.CharField(source='followed.username')
+
+    class Meta:
+        model = Follow
+        fields = ['user','followed','created_at']

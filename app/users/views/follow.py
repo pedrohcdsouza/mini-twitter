@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from ..models import Follow
-from ..serializers import FollowSerializer
+from ..serializers import FollowingSerializer, FollowedSerializer
 from ..permissions import IsSelfOrFollowed
 
 User = get_user_model()
@@ -12,7 +12,7 @@ User = get_user_model()
 # Class to handle the list of users that the authenticated user is following
 
 class FollowingListView(ListAPIView):
-    serializer_class = FollowSerializer
+    serializer_class = FollowingSerializer
     permission_classes = [IsSelfOrFollowed]
 
     def get_queryset(self):
@@ -21,8 +21,9 @@ class FollowingListView(ListAPIView):
     
 # Class to handle the list of users that are following the authenticated user
 
-class FollowedView(APIView):
-    serializer_Class = FollowSerializer
+class FollowedView(ListAPIView):
+
+    serializer_class = FollowedSerializer
     permission_classes = [IsSelfOrFollowed]
 
     def get_queryset(self):
@@ -35,11 +36,11 @@ class FollowToggleView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, username):
-        
         try:
             followed = User.objects.get(username=username)
         except User.DoesNotExist:
             return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
         if request.user == followed:
             return Response({'detail': 'You cannot follow yourself'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -51,7 +52,6 @@ class FollowToggleView(APIView):
             return Response({'detail': f'You are already following {followed.username}'}, status=status.HTTP_200_OK)
         
     def delete(self, request, username):
-        
         try:
             followed = User.objects.get(username=username)
         except User.DoesNotExist:

@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import RegisterView, FollowingListView, FollowedView, FollowToggleView
+from .views.authentication import RegisterView
+from .views.follow import FollowingListView, FollowedView, FollowToggleView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
