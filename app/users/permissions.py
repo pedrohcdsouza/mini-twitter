@@ -1,7 +1,8 @@
 from rest_framework.permissions import BasePermission
 
+# Allow access only to the user themselves or if they are followed by the user
+
 class IsSelfOrFollowed(BasePermission):
-    # Allow access only to the user themselves or if they are followed by the user
     def has_permission(self, request, view):
         username = view.kwargs.get('username')
         user = request.user
