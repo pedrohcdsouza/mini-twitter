@@ -1,0 +1,33 @@
+erdiagram MiniTwitter
+
+notation = default
+
+entity User {
+  id key
+  username
+  email
+  password
+}
+
+entity Post {
+  id key
+  title
+  image
+  created_at
+  updated_at
+  author_id
+}
+
+entity Follow {
+  id key
+  following_id
+  followed_id
+  created_at
+}
+
+entity Like {
+  id key
+  post_id
+  user_id
+  created_at
+}
