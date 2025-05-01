@@ -64,13 +64,3 @@ class PostLikeView(generics.UpdateAPIView):
         else:
             post.likes.add(self.request.user)
         serializer.save()
-
-class PostFeedView(generics.ListAPIView): # FALTA ADICIONAR: SÓ APARECER QUEM É VOCÊ SEGUE
-
-    serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self): 
-        
-        user = self.request.user
-        return Post.objects.filter(author__in=user.following.all()).order_by('-created_at')
