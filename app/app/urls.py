@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('api/', include('users.urls')),
+    path('api/users/', include('users.urls', namespace='users')),
     path('api/', include('post.urls')),
 ]
 
