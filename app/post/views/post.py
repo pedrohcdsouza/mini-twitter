@@ -1,7 +1,10 @@
 from rest_framework import generics, permissions
 from ..models import Post
 from ..serializers import PostSerializer
+from rest_framework.exceptions import PermissionDenied
 
+# O USUÁRIO NÃO ESTÁ CONSEGUINDO VER POSTS QUE ELE NÃO CRIOU, MESMO QUE SEJA DE ALGUÉM QUE ELE SIGA (CORRIGIR!)
+ 
 # This view handles the creation of new posts
 
 class PostCreateView(generics.CreateAPIView):
@@ -50,17 +53,3 @@ class PostDetailView(generics.RetrieveAPIView):
         if self.request.user != obj.author: # ATENÇÃO, REFAZER ESSA PARTE PARA A PESSOA NÃO VER POST QUE NÃO É DELA OU NÃO É POR ALGUEM QUE É SEGUIDO
             raise PermissionDenied("You can't view this post.")
         return obj
-
-class PostLikeView(generics.UpdateAPIView):
-
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_update(self, serializer):
-        post = self.get_object()
-        if post.likes.filter(id=self.request.user.id).exists():
-            post.likes.remove(self.request.user)
-        else:
-            post.likes.add(self.request.user)
-        serializer.save()

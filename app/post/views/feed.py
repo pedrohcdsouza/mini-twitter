@@ -4,6 +4,8 @@ from ..models import Post
 from ..serializers import PostSerializer
 from ..pagination import FeedPagination
 from users.models import Follow
+from rest_framework.exceptions import PermissionDenied
+
 
 class FeedView(ListAPIView):
     serializer_class = PostSerializer
