@@ -1,11 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.deconstruct import deconstructible
+import os
+
+@deconstructible
+
+class UploadToPathAndRename:
+    def __call__(self, instance, filename):
+        ext = filename.split('.')[-1]
+        filename = f"{instance.id if instance.id else 'temp'}.{ext}"
+        return os.path.join('post_images', instance.author.username, filename)
+
+path_and_rename = UploadToPathAndRename()
 
 class Post(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     content = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='post_images/', blank=True, null=True)
+    image = models.ImageField(upload_to=path_and_rename, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
