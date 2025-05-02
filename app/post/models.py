@@ -22,7 +22,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return self.content
     
 class Like(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)

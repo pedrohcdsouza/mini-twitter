@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     # Third-party apps
     'users',
     'post',
+
+    # API Documentation
+    'drf_yasg',
 ]
 
 

@@ -50,6 +50,6 @@ class PostDetailView(generics.RetrieveAPIView):
 
     def get_object(self):
         obj = super().get_object()
-        if self.request.user != obj.author: # ATENÇÃO, REFAZER ESSA PARTE PARA A PESSOA NÃO VER POST QUE NÃO É DELA OU NÃO É POR ALGUEM QUE É SEGUIDO
+        if self.request.user != obj.author:
             raise PermissionDenied("You can't view this post.")
         return obj

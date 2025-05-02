@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from ..models import Follow
 from ..serializers import FollowingSerializer, FollowedSerializer
-from ..permissions import IsSelfOrFollowed
 
 User = get_user_model()
 
@@ -13,7 +12,6 @@ User = get_user_model()
 
 class FollowingListView(ListAPIView):
     serializer_class = FollowingSerializer
-    permission_classes = [IsSelfOrFollowed]
 
     def get_queryset(self):
         username = self.kwargs.get('username')
@@ -24,7 +22,6 @@ class FollowingListView(ListAPIView):
 class FollowedView(ListAPIView):
 
     serializer_class = FollowedSerializer
-    permission_classes = [IsSelfOrFollowed]
 
     def get_queryset(self):
         username = self.kwargs.get('username')
@@ -33,36 +30,53 @@ class FollowedView(ListAPIView):
 # Class to handle the follow/unfollow functionality
 
 class FollowToggleView(APIView):
+
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, username):
+
         try:
+
             followed = User.objects.get(username=username)
+
         except User.DoesNotExist:
+
             return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         
         if request.user == followed:
+
             return Response({'detail': 'You cannot follow yourself'}, status=status.HTTP_400_BAD_REQUEST)
         
         _, created = Follow.objects.get_or_create(following=request.user, followed=followed)
 
         if created:
+
             return Response({'detail': f'You are now following {followed.username}'}, status=status.HTTP_201_CREATED)
+        
         else:
+
             return Response({'detail': f'You are already following {followed.username}'}, status=status.HTTP_200_OK)
         
     def delete(self, request, username):
+
         try:
+
             followed = User.objects.get(username=username)
+
         except User.DoesNotExist:
+
             return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         
         if request.user == followed:
+
             return Response({'detail': 'You cannot unfollow yourself'}, status=status.HTTP_400_BAD_REQUEST)
         
         deleted, _ = Follow.objects.filter(following=request.user, followed=followed).delete()
 
         if deleted:
+
             return Response({'detail': f'You have unfollowed {followed.username}'}, status=status.HTTP_204_NO_CONTENT)
+        
         else:
+            
             return Response({'detail': f'You are not following {followed.username}'}, status=status.HTTP_400_BAD_REQUEST)
