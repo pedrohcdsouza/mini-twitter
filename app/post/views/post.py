@@ -2,9 +2,8 @@ from rest_framework import generics, permissions
 from ..models import Post
 from ..serializers import PostSerializer
 from rest_framework.exceptions import PermissionDenied
+from rest_framework import filters
 
-# O USUÁRIO NÃO ESTÁ CONSEGUINDO VER POSTS QUE ELE NÃO CRIOU, MESMO QUE SEJA DE ALGUÉM QUE ELE SIGA (CORRIGIR!)
- 
 # This view handles the creation of new posts
 
 class PostCreateView(generics.CreateAPIView):
@@ -53,3 +52,12 @@ class PostDetailView(generics.RetrieveAPIView):
         if self.request.user != obj.author:
             raise PermissionDenied("You can't view this post.")
         return obj
+
+# This view handles the search functionality for posts
+
+class PostListView(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['content', 'author__username']

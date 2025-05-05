@@ -18,6 +18,7 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import permissions
+from django.shortcuts import redirect
 
 from drf_yasg.views import get_schema_view # type: ignore
 from drf_yasg import openapi # type: ignore
@@ -37,6 +38,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('', lambda request: redirect('swagger/', permanent=False)),
     path('api/users/', include('users.urls', namespace='users')),
     path('api/post/', include('post.urls', namespace='post')),
 ]
