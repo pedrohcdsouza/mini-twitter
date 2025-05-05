@@ -2,7 +2,7 @@
 
 # 🐦 Mini-Twitter API
 
-Uma aplicação fullstack que simula uma rede social de microblogs (estilo Twitter) com funcionalidades essenciais como criação de usuários, postagens, curtidas e sistema de seguidores.
+Uma aplicação backend que simula uma rede social de microblogs (estilo Twitter) com funcionalidades essenciais como criação de usuários, postagens, curtidas e sistema de seguidores.
 
 ## 📚 Sumário
 
